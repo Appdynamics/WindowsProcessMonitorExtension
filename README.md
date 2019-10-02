@@ -1,1 +1,1 @@
-# SkypeMonitoringExtension
+# WindowsProcessMonitoringExtension
