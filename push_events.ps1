@@ -1,6 +1,6 @@
-param([string]$ServiceName, [string]$ServerName)
+param([string]$ServiceName, [string]$ServerName, [string]$businessApplicationName)
 
-#Write-Host "ServiceName is $ServiceName and ServerName is : $serverName"
+Write-Host "ServiceName is $ServiceName and ServerName is : $serverName and appName: $businessApplicationName"
 
 # -ServiceName "ServiceName"
 
@@ -17,8 +17,6 @@ $endpoint_create_event = "/controller/rest/applications/<application_id>/events?
 #Filter on applications that existed in the last week, return in json format
 $endpoint_get_applications = "/controller/rest/applications?output=json"
 #&time-range-type=BEFORE_NOW&duration-in-mins=10080"
-
-$businessApplicationName = "Skype"
 
 $url = $hostname + $endpoint_get_applications
 

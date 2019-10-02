@@ -1,0 +1,14 @@
+{
+    "ConfigItems": 
+        [
+            {
+                "Name": "tierID",
+                "Value": "XXXX1"
+            },
+    
+            {
+                "Name": "appName", 
+                "Value": "XXXX2"   
+            }
+        ]
+    }

@@ -1,14 +1,14 @@
 <monitor>
-    <name>AppDynamics Skype Process Monitor</name>
+    <name>AppDynamics Windows Process Monitor</name>
        <type>managed</type>
         <enabled>true</enabled>
-        <description>Monitor Skype Processes</description>
+        <description>Monitor Windows Process Status</description>
         <monitor-configuration></monitor-configuration>
         <monitor-run-task>
         <execution-style>periodic</execution-style> 
          <execution-frequency-in-seconds>60</execution-frequency-in-seconds> 
          <execution-timeout-in-secs>600</execution-timeout-in-secs>
-           <name>AppDynamicsProcessMonitor</name>
+           <name>AppDynamicsWindowsProcessMonitor</name>
            <type>executable</type>
            <task-arguments>
           </task-arguments>

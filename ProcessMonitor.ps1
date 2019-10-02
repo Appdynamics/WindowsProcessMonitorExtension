@@ -1,44 +1,20 @@
 Clear-Host
 
-$tier_id = "CHANGE_ME"
 $hostname = hostname
 #TO Upper 
 $hostname = $hostname.ToUpper()
-$metric_prefix = "name=Server|Component:$tier_id|Custom Metrics|$hostname|Skype Process Monitor|"
 
 $success = "value=1"
 $failed = "value=0"
 
-$sleep_duration = 5 
+$sleep_duration = 0 
 
-$hashtable = @{
-    #ServiceName="ServiceDisplayName"
-    "AppDyanmics DB Agent" = "AppDyanmics DB Agent"
-    "App D DB Agent" = "App D DB Agent"
-    # uncomment these lines for TPICAP 
-    #FTA        = "Skype for Business Server File Transfer Agent"
-    #LYNCBACKUP = "Skype for Business Server Backup Service"
-    #MASTER     = "Skype for Business Server Master Replicator Agent"
-    #REPLICA    = "Skype for Business Server Replica Replicator Agent"
-    #RTCASMCU   = "Skype for Business Server Application Sharing"
-    #RTCATS     = "Skype for Business Server Audio Test Service"
-    #RTCAVMCU   = "Skype for Business Server Audio/Video Conferencing"
-    #RTCCAA     = "Skype for Business Server Conferencing Attendant"
-    #RTCCAS     = "Skype for Business Server Conferencing Announcement"
-    #RTCCLSAGT  = "Skype for Business Server Centralized Logging Service Agent"
-    #RTCCPS     = "Skype for Business Server Call Park"
-    #RTCDATAMCU = "Skype for Business Server Web Conferencing"
-    #RTCHA      = "Skype for Business Server Health Agent"
-    #RTCIMMCU   = "Skype for Business Server IM Conferencing"
-    #RTCMEDSRV  = "Skype for Business Server Mediation"
-    #RTCRGS     = "Skype for Business Server Response Group"
-    #RtcSrv     = "Skype for Business Server Front-End"
-    #RTCXMPPTGW = "Skype for Business Server XMPP Translating Gateway"
-}
+$processFile = ".\process.list"
+$confFile = ".\config.json"
 
 #Logging initializations: change as you deem fit
-$LogDir = "C:\AppDynamics\SkypeProcessMonitorLogs"
-$ilogFile = "SkypeProcessMonitor.log"
+$LogDir = "C:\AppDynamics\ProcessMonitor"
+$ilogFile = "ProcessMonitor.log"
 
 $LogPath = $LogDir + '\' + $iLogFile
 
@@ -79,15 +55,33 @@ else {
         
 }
 
-#Start iteration through hash table 
+if (!(test-path $processFile)) {
+    Write-Log ERROR "The $processFile file must exist in the script's path. Quitting " $LogPath
+    Write-Host "missing $processFile"
+    exist 
+} 
 
-$hashtable.Keys | ForEach-Object {
-    $Name = $_
-    $Value = $hashtable.$Name
+if(!(test-path $confFile)) {
+   Write-Log ERROR "The $confFile file must exist in the script's path. Quitting " $LogPath
+   Write-Host "missing $confFile"
+    exist 
+}
+
+$confFileContent = (Get-Content $confFile -Raw) | ConvertFrom-Json
+
+$tier_id = $confFileContent.ConfigItems | where { $_.Name -eq "tierID" } | Select -ExpandProperty Value
+$businessApplicationName = $confFileContent.ConfigItems | where { $_.Name -eq "AppName" } | Select -ExpandProperty Value
+
+Write-Host "Value from JSON  are teirID:  $tier_id AppName: $businessApplicationName"
+
+$metric_prefix = "name=Server|Component:$tier_id|Custom Metrics|$hostname|Process Monitor|"
+
+$processFileContent = Get-Content($processFile)
+
+ForEach($Name in $processFileContent) {
     
     #$ErrorActionPreference='stop'
     #$serviceName = Get-Service -DisplayName $Value 
-   
     try { 
         $serviceName = Get-Service -Name $Name
 
@@ -117,7 +111,7 @@ $hashtable.Keys | ForEach-Object {
                 Write-Host $metric_prefix_new$failed
 
                 #Push an event 
-                & "$PSScriptRoot\push_events.ps1" -ServiceName $Name -ServerName $hostname
+                & "$PSScriptRoot\push_events.ps1" -ServiceName $Name -ServerName $hostname -businessApplicationName $businessApplicationName 
             }
 
         }

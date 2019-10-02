@@ -1,4 +1,4 @@
 @echo off
 
 
-Powershell.exe -ExecutionPolicy remotesigned -File TPICAPSkypeProcessMonitor.ps1
+Powershell.exe -ExecutionPolicy remotesigned -File ProcessMonitor.ps1
