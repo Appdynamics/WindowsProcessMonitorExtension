@@ -1,6 +1,8 @@
-param([string]$ServiceName, [string]$ServerName, [string]$businessApplicationName, [string]$controllerHostName, [string]$oAuthToken)
+param([string]$ServiceName, [string]$ServerName, [string]$businessApplicationName, [string]$controllerHostName, [string]$OAuthToken)
 
-Write-Host "ServiceName is $ServiceName and ServerName is : $serverName and appName: $businessApplicationName and controller : $controllerHostName and token: $oAuthToken"
+Write-Host "ServiceName is $ServiceName and ServerName is : $serverName "
+Write-Host " appName: $businessApplicationName "
+Write-Host "controller : $controllerHostName and token: SCRAMBLED"
 
 # -ServiceName "ServiceName"
 
@@ -24,15 +26,14 @@ $url = $hostname + $endpoint_get_applications
 
 #$token = "ASecretToken" #not using this now 
 
-$user = "iogbole@tpicap-dev"
-$pass = "CHANGE_ME"
+#$user = "iogbole@customer1"
+#$pass = "CHANGE_ME"
+#$pair = "${user}:${pass}"
+#$bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
+#$base64 = [System.Convert]::ToBase64String($bytes)
+#$basicAuthValue = "Basic $base64"
 
-$pair = "${user}:${pass}"
-$bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
-$base64 = [System.Convert]::ToBase64String($bytes)
-$basicAuthValue = "Basic $base64"
-
-$JWTToken = "Bearer $oAuthToken"
+$JWTToken = "Bearer $OAuthToken"
 
 $header = @{
     Accept        = 'application/json'
@@ -70,9 +71,7 @@ $endpoint_create_event | Out-Host
 $summary = "$ServiceName Service is Down on $ServerName server"
 $severity = "ERROR" #this becomes CRITICAL in the controller UI 
 $eventType = "CUSTOM" #CUSTOM
-$customeventtype = "SKYPE" 
-
-
+$customeventtype = $businessApplicationName 
 
 $endpoint_create_event = "${endpoint_create_event}summary=${summary}"
 $endpoint_create_event = "${endpoint_create_event}&severity=${severity}"
@@ -95,6 +94,9 @@ $params = @{
 }
 
 try {
+
+    Write-Host  @params
+
     $applicationObjects = Invoke-RestMethod @params
 }
 catch {

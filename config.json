@@ -3,22 +3,22 @@
         [
             {
                 "Name": "tierID",
-                "Value": "XXXX1"
+                "Value": "COMPONENT ID GOES HERE"
             },
     
             {
                 "Name": "appName", 
-                "Value": "XXXX2"   
+                "Value": "APPNAME IN APPD"   
             }, 
 
             {
                 "Name": "controllerHost", 
-                "Value": "https://tpicap-dev.saas.appdynamics.com"   
+                "Value": "https://CUSTOMER.saas.appdynamics.com"   
             },
 
             {
-                "Name": "JWTToken", 
-                "Value": "XXXX2"   
+                "Name": "OAuthToken", 
+                "Value": "PASTE BEARER TOKEN HERE"   
             }
         ]
     }

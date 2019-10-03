@@ -1,5 +1,7 @@
 Clear-Host
 
+$metric_prefix =""
+
 $hostname = hostname
 #TO Upper 
 $hostname = $hostname.ToUpper()
@@ -9,7 +11,7 @@ $failed = "value=0"
 
 $sleep_duration = 0 
 
-$processFile = ".\process.list"
+$processFile = ".\process.list.txt"
 $confFile = ".\config.json"
 
 #Logging initializations: change as you deem fit
@@ -56,15 +58,15 @@ else {
 }
 
 if (!(test-path $processFile)) {
-    Write-Log ERROR "The $processFile file must exist in the script's path. Quitting " $LogPath
+    Write-Log ERROR "The $processFile file must exist in the script's path. Exiting " $LogPath
     Write-Host "missing $processFile"
-    exist 
+    Exit
 } 
 
 if(!(test-path $confFile)) {
-   Write-Log ERROR "The $confFile file must exist in the script's path. Quitting " $LogPath
+   Write-Log ERROR "The $confFile file must exist in the script's path. Exiting " $LogPath
    Write-Host "missing $confFile"
-    exist 
+    Exit
 }
 
 $confFileContent = (Get-Content $confFile -Raw) | ConvertFrom-Json
@@ -72,7 +74,7 @@ $confFileContent = (Get-Content $confFile -Raw) | ConvertFrom-Json
 $tier_id = $confFileContent.ConfigItems | where { $_.Name -eq "tierID" } | Select -ExpandProperty Value
 $businessApplicationName = $confFileContent.ConfigItems | where { $_.Name -eq "AppName" } | Select -ExpandProperty Value
 $controllerHostName = $confFileContent.ConfigItems | where { $_.Name -eq "controllerHost" } | Select -ExpandProperty Value
-$oAuthToken = $confFileContent.ConfigItems | where { $_.Name -eq "oAuthToken" } | Select -ExpandProperty Value
+$OAuthToken = $confFileContent.ConfigItems | where { $_.Name -eq "OAuthToken" } | Select -ExpandProperty Value
 
 Write-Host "Value from JSON  are teirID:  $tier_id AppName: $businessApplicationName"
 
@@ -83,15 +85,14 @@ $processFileContent = Get-Content($processFile)
 ForEach($Name in $processFileContent) {
     
     #$ErrorActionPreference='stop'
-    #$serviceName = Get-Service -DisplayName $Value 
+    #$serviceNameDispName = Get-Service -DisplayName $Value 
     try { 
         $serviceName = Get-Service -Name $Name
 
         sleep $sleep_duration
 
-        if ($serviceName -match $Name) {
-            #set service_name in metric prefix
-        
+        if ($serviceName -match $Name) {  #to avoid a rare race condition 
+    
             Write-Log INFO "Service Name: See next line " $LogPath  
             Write-Log INFO $serviceName.DisplayName $LogPath
             Write-Log INFO "Service Status: See next line" $LogPath
@@ -113,7 +114,7 @@ ForEach($Name in $processFileContent) {
                 Write-Host $metric_prefix_new$failed
 
                 #Push an event 
-                & "$PSScriptRoot\push_events.ps1" -ServiceName $Name -ServerName $hostname -businessApplicationName $businessApplicationName -controllerHostName $controllerHostName -oAuthToken $oAuthToken 
+                & "$PSScriptRoot\push_events.ps1" -ServiceName $Name -ServerName $hostname -businessApplicationName $businessApplicationName -controllerHostName $controllerHostName -OAuthToken $OAuthToken 
             }
 
         }
