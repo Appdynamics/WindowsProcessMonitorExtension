@@ -71,6 +71,8 @@ $confFileContent = (Get-Content $confFile -Raw) | ConvertFrom-Json
 
 $tier_id = $confFileContent.ConfigItems | where { $_.Name -eq "tierID" } | Select -ExpandProperty Value
 $businessApplicationName = $confFileContent.ConfigItems | where { $_.Name -eq "AppName" } | Select -ExpandProperty Value
+$controllerHostName = $confFileContent.ConfigItems | where { $_.Name -eq "controllerHost" } | Select -ExpandProperty Value
+$oAuthToken = $confFileContent.ConfigItems | where { $_.Name -eq "oAuthToken" } | Select -ExpandProperty Value
 
 Write-Host "Value from JSON  are teirID:  $tier_id AppName: $businessApplicationName"
 
@@ -111,7 +113,7 @@ ForEach($Name in $processFileContent) {
                 Write-Host $metric_prefix_new$failed
 
                 #Push an event 
-                & "$PSScriptRoot\push_events.ps1" -ServiceName $Name -ServerName $hostname -businessApplicationName $businessApplicationName 
+                & "$PSScriptRoot\push_events.ps1" -ServiceName $Name -ServerName $hostname -businessApplicationName $businessApplicationName -controllerHostName $controllerHostName -oAuthToken $oAuthToken 
             }
 
         }

@@ -9,6 +9,16 @@
             {
                 "Name": "appName", 
                 "Value": "XXXX2"   
+            }, 
+
+            {
+                "Name": "controllerHost", 
+                "Value": "https://tpicap-dev.saas.appdynamics.com"   
+            },
+
+            {
+                "Name": "JWTToken", 
+                "Value": "XXXX2"   
             }
         ]
     }

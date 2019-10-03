@@ -1,6 +1,6 @@
-param([string]$ServiceName, [string]$ServerName, [string]$businessApplicationName)
+param([string]$ServiceName, [string]$ServerName, [string]$businessApplicationName, [string]$controllerHostName, [string]$oAuthToken)
 
-Write-Host "ServiceName is $ServiceName and ServerName is : $serverName and appName: $businessApplicationName"
+Write-Host "ServiceName is $ServiceName and ServerName is : $serverName and appName: $businessApplicationName and controller : $controllerHostName and token: $oAuthToken"
 
 # -ServiceName "ServiceName"
 
@@ -10,7 +10,7 @@ Write-Host "ServiceName is $ServiceName and ServerName is : $serverName and appN
 # Create the event based on the application id
 
 #Controller hostname
-$hostname = "https://tpicap-dev.saas.appdynamics.com"
+$hostname = $controllerHostName
 
 $endpoint_create_event = "/controller/rest/applications/<application_id>/events?"
 
@@ -32,9 +32,11 @@ $bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
 $base64 = [System.Convert]::ToBase64String($bytes)
 $basicAuthValue = "Basic $base64"
 
+$JWTToken = "Bearer $oAuthToken"
+
 $header = @{
     Accept        = 'application/json'
-    Authorization = $basicAuthValue
+    Authorization =  $JWTToken
     ContentType   = 'application/json'
 }
 
