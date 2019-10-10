@@ -78,7 +78,7 @@ $OAuthToken = $confFileContent.ConfigItems | where { $_.Name -eq "OAuthToken" } 
 
 Write-Host "Value from JSON  are teirID:  $tier_id AppName: $businessApplicationName"
 
-$metric_prefix = "name=Server|Component:$tier_id|Custom Metrics|$hostname|Process Monitor|"
+$metric_prefix = "name=Server|Component:$tier_id|Custom Metrics|Process Monitor|$hostname|"
 
 $processFileContent = Get-Content($processFile)
 
