@@ -126,7 +126,7 @@ ForEach($Name in $processFileContent) {
 
     }
     catch {
-        $msg = "An error occured in the catch block, it's most likely that the $Name service doesn't exist or your controller creds are not correct"
+        $msg = "An error occured in the catch block, it's most likely that the $Name service doesn't exist or your controller credentials are not correct"
         Write-Log ERROR $msg $LogPath
         Write-Host $msg
 
