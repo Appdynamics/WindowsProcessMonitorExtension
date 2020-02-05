@@ -12,6 +12,8 @@ Instructions
 
        * tierID - Follow the instructions in this doc to get a component ID -           
 
+    You may use the tier name in this field instead of the  tierID as the ID will change if the tier is deleted. 
+      
     https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-troubleshoot-missing-custom-metrics-or-extensions/ta-p/28695#Configuring%20an%20Extension
 
       * AppName: The Application name in AppDynamics  Controller. All custom events will be sent to this application
